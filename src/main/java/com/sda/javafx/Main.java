@@ -1,5 +1,6 @@
 package com.sda.javafx;
 
+import com.sda.javafx.controller.PersonController;
 import com.sda.javafx.model.Person;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -60,6 +61,9 @@ public class Main extends Application {
             Scene scene = new Scene(layout);
             stage.setScene(scene);
             stage.show();
+
+            PersonController controller = loader.getController();
+            controller.setMain(this);
 
         } catch (IOException e) {
         e.printStackTrace();
