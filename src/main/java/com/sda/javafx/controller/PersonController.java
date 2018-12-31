@@ -1,10 +1,20 @@
 package com.sda.javafx.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sda.javafx.Main;
 import com.sda.javafx.model.Person;
+import com.sda.javafx.model.PersonFX;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 public class PersonController {
@@ -12,7 +22,7 @@ public class PersonController {
     private Main main;
 
     @FXML
-    private TableView<Person> personTable;
+    private TableView<PersonFX> personTable;
     @FXML
     private Label firstNameLabel;
     @FXML
@@ -26,9 +36,9 @@ public class PersonController {
     @FXML
     private Label telephoneLabel;
     @FXML
-    private TableColumn<Person, String> firstnameColumn;
+    private TableColumn<PersonFX, String> firstnameColumn;
     @FXML
-    private TableColumn<Person, String> lastnameColumn;
+    private TableColumn<PersonFX, String> lastnameColumn;
 
 
 
@@ -42,13 +52,14 @@ public class PersonController {
 
     @FXML
     public void handleNewButton(){
-        this.main.loadPersonNew();
-
+        PersonFX personFX = new PersonFX();
+        this.main.loadPersonNew(personFX);
+        main.getPersonFXList().add(personFX);
     }
 
     @FXML
     public void handleEditButton() {
-        Person selectPerson = personTable.getSelectionModel().getSelectedItem();
+        PersonFX selectPerson = personTable.getSelectionModel().getSelectedItem();
         if (selectPerson != null) {
             System.out.println(selectPerson.getName());
             this.main.loadPersonEdit(selectPerson);
@@ -78,23 +89,74 @@ public class PersonController {
     }
 
 
-    private void showPersonDetails(Person person){
+    private void showPersonDetails(PersonFX person){
         if(person != null) {
             firstNameLabel.setText(person.getName());
             lastNameLabel.setText(person.getLastName());
+            streetLabel.setText(person.getStreet());
+            cityLabel.setText(person.getCity());
+            postalCodeLabel.setText(person.getPostalCode());
+            telephoneLabel.setText(person.getTelephone());
         }else{
             firstNameLabel.setText("");
             lastNameLabel.setText("");
+            streetLabel.setText("");
+            cityLabel.setText("");
+            postalCodeLabel.setText("");
+            telephoneLabel.setText("");
         }
     }
 
     public void setMain(Main main) {
         this.main = main;
-        personTable.setItems(this.main.getPersonList());
+        personTable.setItems(this.main.getPersonFXList());
     }
 
     @FXML
     public void saveData() {
 
+    }
+
+    @FXML
+    public void openFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("JSON Files", "*.json"),
+                new FileChooser.ExtensionFilter("Text Files", "*.txt"),
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"),
+                new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.aac"),
+                new FileChooser.ExtensionFilter("All Files", "*.*"));
+        File selectedFile = fileChooser.showOpenDialog(main.getStage());
+        if (selectedFile != null) {
+            System.out.println("Wybrano plik: "+ selectedFile.getAbsolutePath());
+            loadData(selectedFile);
+        }
+    }
+
+    private void loadData(File file) {
+        Path pathToFile = Paths.get(file.getAbsolutePath());
+
+        ObjectMapper mapper = new ObjectMapper();
+        Person[] readPerson = new Person[0];
+        try {
+            readPerson = mapper.readValue(new File(String.valueOf(pathToFile)), Person[].class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ObservableList<PersonFX> personFXList = FXCollections.observableArrayList();
+        for (Person p : readPerson) {
+            System.out.println(p.getName());
+            personFXList.add(new PersonFX(p.getName(), p.getLastName(), p.getStreet(), p.getCity(), p.getPostalCode(), p.getTelephone()));
+        }
+
+        // Ustawienie danych dla tabeli, wykorzystujemy utworzoną powyżej listę
+        personTable.itemsProperty().setValue(personFXList);
+
+        // Powiązanie pierwszej kolumny z polem name obiektu typu PieChart.Data
+        firstnameColumn.setCellValueFactory(cell -> cell.getValue().nameProperty());
+
+        // Powiązanie drugiej kolumny z polem pieValue PieChart.Data
+        lastnameColumn.setCellValueFactory(cell -> cell.getValue().lastNameProperty());
     }
 }

@@ -1,11 +1,10 @@
 package com.sda.javafx;
 
-//import com.sda.javafx.controller.Delete;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sda.javafx.controller.PersonController;
 import com.sda.javafx.controller.PersonDetails;
 import com.sda.javafx.model.Person;
-import com.sda.javafx.model.PersonJSON;
+import com.sda.javafx.model.PersonFX;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,44 +23,40 @@ public class Main extends Application {
     private Stage stage;
     private VBox layout;
 
-    private ObservableList<Person> personList = FXCollections.observableArrayList();
-    private List<PersonJSON> personJSONList = new ArrayList<>();
+    private List<Person> personList = new ArrayList<>();
+    private ObservableList<PersonFX> personFXList = FXCollections.observableArrayList();
 
 
     public  Main() throws IOException{
 
-        personJSONList.add(new PersonJSON("Jan", "Kowalski"));
-        personJSONList.add(new PersonJSON("Piotr","Kowalski"));
-        personJSONList.add(new PersonJSON("Krzysztof","Kowalski"));
-        personJSONList.add(new PersonJSON("Jurgen","Kowalski"));
-        personJSONList.add(new PersonJSON("Jan","Nowak"));
-        personJSONList.add(new PersonJSON("Jan","Wiśniewski"));
-        personJSONList.add(new PersonJSON("Grzegorz","Kowalczyk"));
-        personJSONList.add(new PersonJSON("Jan", "Kowalski"));
-        personJSONList.add(new PersonJSON("Stefan", "Kosiński"));
-        personJSONList.add(new PersonJSON("Jacek", "Kawalec"));
-        personJSONList.add(new PersonJSON("Jan", "Kowalski"));
-        personJSONList.add(new PersonJSON("Gaweł", "Paweł"));
-        personJSONList.add(new PersonJSON("Jan", "Kowalski"));
-        personJSONList.add(new PersonJSON("Jakub", "Kowalski"));
-        personJSONList.add(new PersonJSON("Grażyna", "Ruda"));
+/*        personList.add(new Person("Jan", "Kowalski"));
+        personList.add(new Person("Piotr","Kowalski"));
+        personList.add(new Person("Krzysztof","Kowalski"));
+        personList.add(new Person("Jurgen","Kowalski"));
+        personList.add(new Person("Jan","Nowak"));
+        personList.add(new Person("Jan","Wiśniewski"));
+        personList.add(new Person("Grzegorz","Kowalczyk"));
+        personList.add(new Person("Jan", "Kowalski"));
+        personList.add(new Person("Stefan", "Kosiński"));
+        personList.add(new Person("Jacek", "Kawalec"));
+        personList.add(new Person("Jan", "Kowalski"));
+        personList.add(new Person("Gaweł", "Paweł"));
+        personList.add(new Person("Jan", "Kowalski"));
+        personList.add(new Person("Jakub", "Kowalski"));
+        personList.add(new Person("Grażyna", "Ruda"));*/
 
 
 
         ObjectMapper mapper = new ObjectMapper();
-        File filename = new File("src\\main\\resources\\person.json");
+/*        File filename = new File("src\\main\\resources\\person.json");
         filename.createNewFile();
-        mapper.writeValue(filename, personJSONList);
+        mapper.writeValue(filename, personList);*/
 
-        PersonJSON[] readorders = mapper.readValue(new File("src\\main\\resources\\person.json"), PersonJSON[].class);
-
-        for(PersonJSON p:  readorders){
+        Person[] readorders = mapper.readValue(new File("src\\main\\resources\\person.json"), Person[].class);
+        for(Person p:  readorders){
             System.out.println(p.getName());
-            personList.add(new Person(p.getName(), p.getLastname()));
-//
-
-
-    }
+            personFXList.add(new PersonFX(p.getName(), p.getLastName(),p.getStreet(), p.getCity(), p.getPostalCode(),p.getTelephone()));
+        }
 
     }
 
@@ -96,7 +91,7 @@ public class Main extends Application {
 
     }
 
-    public void loadPersonEdit(Person person){
+    public void loadPersonEdit(PersonFX personFX){
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("/editPerson.fxml"));
@@ -104,7 +99,7 @@ public class Main extends Application {
             VBox window = (VBox) loader.load();
 
             PersonDetails personDetails = loader.getController();
-            personDetails.setPerson(person);
+            personDetails.setPersonFX(personFX);
 
             Stage editStage = new Stage();
             editStage.setTitle("Edytuj osobę");
@@ -120,16 +115,19 @@ public class Main extends Application {
         }
     }
 
-    public void loadPersonNew(){
+    public void loadPersonNew(PersonFX personFX){
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("/newPerson.fxml"));
 
             VBox window = (VBox) loader.load();
 
-
+            PersonDetails personDetails = loader.getController();
+            personDetails.setMain(this);
 
             Stage editStage = new Stage();
+            personDetails.setStage(editStage);
+            personDetails.setPersonFX(personFX);
             editStage.setTitle("Dodaj osobę");
             Scene scene = new Scene(window);
             editStage.setScene(scene);
@@ -189,7 +187,11 @@ public class Main extends Application {
         return stage;
     }
 
-    public ObservableList<Person> getPersonList() {
+    public List<Person> getPersonList() {
         return personList;
+    }
+
+    public ObservableList<PersonFX> getPersonFXList() {
+        return personFXList;
     }
 }

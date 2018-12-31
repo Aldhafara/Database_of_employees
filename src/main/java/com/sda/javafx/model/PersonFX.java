@@ -12,11 +12,17 @@ public class PersonFX {
     private StringProperty postalCode;
     private StringProperty telephone;
 
-    public PersonFX(){}
+    public PersonFX() {
+        this(null, null, null, null, null, null);
+    }
 
-    public PersonFX(String name, String lastName){
+    public PersonFX(String name, String lastName, String street, String city, String postalCode, String telephone){
         this.name = new SimpleStringProperty(name);
         this.lastName = new SimpleStringProperty(lastName);
+        this.street = new SimpleStringProperty(street);
+        this.city = new SimpleStringProperty(city);
+        this.postalCode = new SimpleStringProperty(postalCode);
+        this.telephone = new SimpleStringProperty(telephone);
 
     }
 
