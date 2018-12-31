@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PersonController {
@@ -84,7 +86,12 @@ public class PersonController {
 
         if (alert.getResult() == ButtonType.YES){
             if(index>=0)
-                personTable.getItems().remove(index);
+            {
+                System.out.println("-------->      Usuwam " + personTable.getSelectionModel().getSelectedItem().getName()
+                        + " " + personTable.getSelectionModel().getSelectedItem().getLastName() + "      <--------");
+                main.removeFromPersonFXList(personTable.getItems().remove(index));
+                main.wypiszListęFX();
+            }
         }
     }
 
@@ -132,6 +139,22 @@ public class PersonController {
             System.out.println("Wybrano plik: "+ selectedFile.getAbsolutePath());
             loadData(selectedFile);
         }
+    }
+
+    @FXML
+    public void saveFile() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        List<PersonFX> personFXlist = new ArrayList<>();
+
+        for (PersonFX p : main.getPersonFXList()) {
+            personFXlist.add(new PersonFX(p.getName(), p.getLastName(), p.getStreet(), p.getCity(), p.getPostalCode(), p.getTelephone()));
+        }
+
+        File filename = new File("persons.json");
+        //mapper.writeValue(filename, personFXlist);
+        mapper.writeValue(filename, main.getPersonFXList());
+        System.out.println("<--------      Zapisuję      -------->");
+        main.wypiszListęFX();
     }
 
     private void loadData(File file) {

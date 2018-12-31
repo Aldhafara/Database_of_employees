@@ -48,13 +48,13 @@ public class Main extends Application {
 
 
         ObjectMapper mapper = new ObjectMapper();
-/*        File filename = new File("src\\main\\resources\\person.json");
+/*        File filename = new File("persons.json");
         filename.createNewFile();
         mapper.writeValue(filename, personList);*/
 
-        Person[] readorders = mapper.readValue(new File("src\\main\\resources\\person.json"), Person[].class);
+        Person[] readorders = mapper.readValue(new File("persons.json"), Person[].class);
         for(Person p:  readorders){
-            System.out.println(p.getName());
+            System.out.println(p.getName() +" " +p.getLastName());
             personFXList.add(new PersonFX(p.getName(), p.getLastName(),p.getStreet(), p.getCity(), p.getPostalCode(),p.getTelephone()));
         }
 
@@ -193,5 +193,22 @@ public class Main extends Application {
 
     public ObservableList<PersonFX> getPersonFXList() {
         return personFXList;
+    }
+
+    public void removeFromPersonFXList(PersonFX person){
+        personFXList.remove(person);
+    }
+
+    public void wypiszListęFX(){
+        for (PersonFX p : personFXList) {
+            System.out.println(p.getName() +" " +p.getLastName());
+        }
+        int i = personFXList.size();
+        System.out.print("Lista ma " + i);
+        if (i==1)
+            System.out.println(" rekord");
+        else if (i>1 && i<5)
+            System.out.println(" rekordy");
+        else System.out.println(" rekordów");
     }
 }
