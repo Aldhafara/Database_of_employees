@@ -71,7 +71,7 @@ public class Main extends Application {
         loadView();
     }
 
-    public void loadView(){
+    private void loadView(){
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("/rootView.fxml"));
@@ -116,51 +116,29 @@ public class Main extends Application {
     }
 
     public void loadPersonNew(PersonFX personFX){
-        try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("/newPerson.fxml"));
-
-            VBox window = (VBox) loader.load();
+        VBox window = null;
+        try {
+            window = (VBox) loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
             PersonDetails personDetails = loader.getController();
             personDetails.setMain(this);
-
-            Stage editStage = new Stage();
-            personDetails.setStage(editStage);
+            Stage newPersonStage = new Stage();
+            personDetails.setStage(newPersonStage);
             personDetails.setPersonFX(personFX);
-            editStage.setTitle("Dodaj osobę");
-            Scene scene = new Scene(window);
-            editStage.setScene(scene);
-            editStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            newPersonStage.setTitle("Dodaj osobę");
+        Scene scene = null;
+        if (window != null) {
+            scene = new Scene(window);
         }
+        newPersonStage.setScene(scene);
+            newPersonStage.show();
+
     }
-
-    /*public void loadPersonDelete(Person person) {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("/delete.fxml"));
-
-            VBox window = (VBox) loader.load();
-
-            Delete deletePerson = loader.getController();
-            deletePerson.setPerson(person);
-
-            Stage editStage = new Stage();
-            editStage.setTitle("Usuń osobę");
-
-            deletePerson.setStage(editStage);
-
-            Scene scene = new Scene(window);
-            editStage.setScene(scene);
-            editStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
 
     private void loader(String path, String title, Person person) {
         try {

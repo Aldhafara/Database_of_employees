@@ -63,7 +63,7 @@ public class PersonController {
     public void handleEditButton() {
         PersonFX selectPerson = personTable.getSelectionModel().getSelectedItem();
         if (selectPerson != null) {
-            System.out.println(selectPerson.getName());
+            System.out.println("-------->      Edytuję " + selectPerson.getName() + " "+ selectPerson.getLastName() + "      <--------");
             this.main.loadPersonEdit(selectPerson);
         }else{
             Alert alert = new Alert(Alert.AlertType.WARNING);

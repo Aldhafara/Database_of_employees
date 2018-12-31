@@ -28,7 +28,7 @@ public class PersonDetails {
 
     @FXML
     public void initialize(){
-        lastName.setText("To jest test");
+        name.setText("To jest test");
 
     }
     public void setPerson(Person person){
@@ -52,9 +52,15 @@ public class PersonDetails {
 
     @FXML
     public void handleOk() {
-        person.setName(name.getText());
-        person.setLastName(lastName.getText());
-        System.out.println("Zapisz");
+
+        personFX.setName(name.getText());
+        personFX.setLastName(lastName.getText());
+        personFX.setCity(city.getText());
+        personFX.setStreet(street.getText());
+        personFX.setPostalCode(postalCode.getText());
+        personFX.setTelephone(telephonNumber.getText());
+        System.out.println("-------->      Dodaję " + name.getText()
+                + " " + lastName.getText() + "      <--------");
         this.stage.close();
 
     }
