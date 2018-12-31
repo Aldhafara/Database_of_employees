@@ -3,7 +3,7 @@ package com.sda.javafx.model;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Person {
+public class PersonFX {
 
     private StringProperty name;
     private StringProperty lastName;
@@ -12,11 +12,9 @@ public class Person {
     private StringProperty postalCode;
     private StringProperty telephone;
 
-    public Person(){
-        this(null,null);
-    }
+    public PersonFX(){}
 
-    public Person(String name, String lastName){
+    public PersonFX(String name, String lastName){
         this.name = new SimpleStringProperty(name);
         this.lastName = new SimpleStringProperty(lastName);
 
